@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Scc.DeviceDataProcessing": {
+      "commandName": "Project",
+      "commandLineArgs": "merge"
+    }
+  }
+}
