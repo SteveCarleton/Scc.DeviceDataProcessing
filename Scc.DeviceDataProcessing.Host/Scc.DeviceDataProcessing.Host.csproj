@@ -20,7 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Scc.Services\Scc.Services.csproj" />
+    <ProjectReference Include="..\Scc.DeviceDataProcessing.Core\Scc.DeviceDataProcessing.Core.csproj" />
+    <ProjectReference Include="..\Scc.DeviceDataProcessing.DataModels\Scc.DeviceDataProcessing.DataModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
