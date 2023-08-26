@@ -11,3 +11,9 @@
 /Scc.DeviceDataProcessing/obj
 /Scc.Services/bin/Debug/net7.0
 /Scc.Services/obj
+/Scc.DeviceDataProcessing.Core/obj
+/Scc.DeviceDataProcessing.Core/bin/Debug/net7.0
+/Scc.DeviceDataProcessing.DataModels/bin/Debug/net7.0
+/Scc.DeviceDataProcessing.DataModels/obj
+/Scc.DeviceDataProcessing.Test/bin/Debug/net7.0
+/Scc.DeviceDataProcessing.Test/obj
