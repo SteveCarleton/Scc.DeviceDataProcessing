@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/bin/Debug/net7.0
+/obj
+/Scc.DeviceDataProcessing.Host/.vs
+/Scc.DeviceDataProcessing.Host/bin/Debug/net7.0
+/Scc.DeviceDataProcessing.Host/obj
+/Scc.DeviceDataProcessing/obj
+/Scc.Services/bin/Debug/net7.0
+/Scc.Services/obj
