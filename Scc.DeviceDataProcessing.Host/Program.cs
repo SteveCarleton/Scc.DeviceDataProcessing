@@ -9,6 +9,7 @@ using System.Text.Json.Serialization;
 using NLog.Extensions.Logging;
 using Scc.DeviceDataProcessing.DataModels;
 using Scc.Services;
+using System.Linq;
 
 
 //#nullable enable
@@ -46,10 +47,12 @@ internal class ConsoleHost
                     aliases: new string[] { "-if1", "--inputfile1-option" },
                     getDefaultValue: () => inputFile1 ?? string.Empty,
                     description:  "Json device data input file 1"),
+
                 new Option<string>(
                     aliases: new string[] { "-if2", "--inputfile2-option" },
                     getDefaultValue: () => inputFile2 ?? string.Empty,
                     description: "Json device data input file 2"),
+
                  new Option<string>(
                      aliases: new string[] { "-of", "--outputfile-option" },
                      getDefaultValue: () => outputFile ?? string.Empty,
@@ -62,11 +65,11 @@ internal class ConsoleHost
             mergeCommand.Handler = CommandHandler.Create<string, string, string>((inputFile1Option, inputFile2Option, outputFileOption) =>
             {
                 log.LogInformation("The value for --input-file1 is: " + inputFile1Option);
-                log.LogTrace("The value for --input-file2 is: " + inputFile2Option);
-                log.LogDebug("The value for --output-file is: " + outputFileOption);
+                log.LogInformation("The value for --input-file2 is: " + inputFile2Option);
+                log.LogInformation("The value for --output-file is: " + outputFileOption);
 
                 JsonSerializerOptions options = new();
-                options.Converters.Add((JsonConverter)new JsonDateTimeConverter());
+                options.Converters.Add(new JsonDateTimeConverter());
 
                 partner = JsonSerializer.Deserialize<Partner>(File.ReadAllText(inputFile1Option), options);
                 customer = JsonSerializer.Deserialize<Customer>(File.ReadAllText(inputFile2Option), options);
@@ -77,6 +80,9 @@ internal class ConsoleHost
                 {
                     foreach (Sensor sensor in tracker.Sensors)
                     {
+                        var tempCrumbs = (from s in tracker.Sensors where s.Name == "Temperature" select s.Crumbs).FirstOrDefault();
+                        var humidCrumbs = (from s in tracker.Sensors where s.Name == "Humidty" select s.Crumbs).FirstOrDefault();
+
                         SensorResult sensorResult = new()
                         {
                             CompanyId = partner.PartnerId,
@@ -91,23 +97,23 @@ internal class ConsoleHost
                             LastReadingDtm = (from c in sensor.Crumbs select c).Max(c => c.CreatedDtm),
 
                             //TemperatureCount = new int?(source1.Count<Crumb[]>()),
-                            TemperatureCount = (from s in tracker.Sensors where s.Name == "Tempurature" select s.Crumbs).Count<Crumb[]>(),
+                            TemperatureCount = (from s in tracker.Sensors where s.Name == "Temperature" select s.Crumbs).FirstOrDefault()?.Count(),
 
                             //IEnumerable<Crumb[]> source1 = ((IEnumerable<Sensor>)tracker.Sensors).Where<Sensor>((Func<Sensor, bool>)(s => s.Name == "Tempurature")).Select<Sensor, Crumb[]>((Func<Sensor, Crumb[]>)(s => s.Crumbs));
                             //Crumb[] source3 = source1.FirstOrDefault<Crumb[]>(),
                             //AverageTemperature = source3 != null ? new double?(((IEnumerable<Crumb>)source3).ToList<Crumb>().Average<Crumb>((Func<Crumb, double>)(c => c.Value))) : new double?(),
-                            AverageTemperature = (from s in tracker.Sensors where s.Name == "Tempurature" select s.Crumbs)
+                            AverageTemperature = (from s in tracker.Sensors where s.Name == "Temperature" select s.Crumbs)
                                 .FirstOrDefault<Crumb[]>()?
                                 .ToList()
                                 .Average(c => c.Value),
 
                             //HumidityCount = new int?(source2.Count<Crumb[]>()),
-                            HumidityCount = (from s in tracker.Sensors where s.Name == "Humidity" select s.Crumbs).Count<Crumb[]>(),
+                            HumidityCount = (from s in tracker.Sensors where s.Name == "Humidty" select s.Crumbs).FirstOrDefault()?.Count(),
 
                             //IEnumerable<Crumb[]> source2 = ((IEnumerable<Sensor>)tracker.Sensors).Where<Sensor>((Func<Sensor, bool>)(s => s.Name == "Humidity")).Select<Sensor, Crumb[]>((Func<Sensor, Crumb[]>)(s => s.Crumbs));
                             //Crumb[] source4 = source2.FirstOrDefault<Crumb[]>(),
                             //AverageHumdity = source4 != null ? new double?(((IEnumerable<Crumb>)source4).ToList<Crumb>().Average<Crumb>((Func<Crumb, double>)(c => c.Value))) : new double?(),
-                            AverageHumdity = (from s in tracker.Sensors where s.Name == "Humidity" select s.Crumbs)
+                            AverageHumidity = (from s in tracker.Sensors where s.Name == "Humidty" select s.Crumbs)
                                 .FirstOrDefault<Crumb[]>()?
                                 .ToList()
                                 .Average(c => c.Value),
@@ -144,11 +150,14 @@ internal class ConsoleHost
 
                         //IEnumerable<SensorData> source6 = ((IEnumerable<SensorData>)device.SensorData).Where<SensorData>((Func<SensorData, bool>)(d => d.SensorType == "HUM"));
                         //AverageHumdity = source6 != null ? new double?(source6.ToList<SensorData>().Average<SensorData>((Func<SensorData, double>)(d => d.Value))) : new double?();
-                        AverageHumdity = (from s in device.SensorData where s.SensorType == "HUM" select s).Average(d => d.Value)
+                        AverageHumidity = (from s in device.SensorData where s.SensorType == "HUM" select s).Average(d => d.Value)
                     };
 
                     sensorResultList.Add(sensorResult);
                 }
+
+                string json = JsonSerializer.Serialize(sensorResultList, options);
+                File.WriteAllText(outputFileOption, json);
             });
 
             var rootCommand = new RootCommand { mergeCommand };

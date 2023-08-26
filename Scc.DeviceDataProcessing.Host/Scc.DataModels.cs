@@ -86,7 +86,7 @@ public class SensorResult
 
     public int? HumidityCount { get; set; }
 
-    public double? AverageHumdity { get; set; }
+    public double? AverageHumidity { get; set; }
 }
 
 public enum SensorTypes
