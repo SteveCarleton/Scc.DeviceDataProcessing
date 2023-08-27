@@ -8,7 +8,7 @@ using System.CommandLine.Invocation;
 //using System.Text.Json.Serialization;
 using NLog.Extensions.Logging;
 using Scc.DeviceDataProcessing.Core;
-using Scc.DeviceDataProcessing.DataModels;
+//using Scc.DeviceDataProcessing.DataModels;
 using Scc.Services.Logging;
 //using Scc.Services;
 //using System.Linq;
@@ -79,7 +79,7 @@ internal class ConsoleHost
 
                 using (ServiceProvider serviceProvider = services.BuildServiceProvider())
                 {
-                    Core.Application? app = serviceProvider.GetService<Core.Application>();
+                    Application? app = serviceProvider.GetService<Application>();
                     app?.Merge(inputFile1Option, inputFile2Option, outputFileOption);
                 }
 
@@ -89,7 +89,7 @@ internal class ConsoleHost
                 //partner = JsonSerializer.Deserialize<Partner>(File.ReadAllText(inputFile1Option), options);
                 //customer = JsonSerializer.Deserialize<Customer>(File.ReadAllText(inputFile2Option), options);
 
-                List<SensorResult> sensorResultList = new();
+                //List<SensorResult> sensorResultList = new();
 
                 //foreach (Tracker tracker in partner!.Trackers)
                 //{
@@ -196,7 +196,7 @@ internal class ConsoleHost
             builder.AddNLog("nlog.config");
         });
 
-        services.AddTransient<Core.Application>();
+        services.AddTransient<Application>();
         services.AddScoped<JsonProcessing>();
         services.AddScoped<DataProcessing>();
     }

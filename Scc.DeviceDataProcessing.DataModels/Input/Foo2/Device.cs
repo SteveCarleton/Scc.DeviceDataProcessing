@@ -2,7 +2,7 @@
 
 public class Device
 {
-    public int DeviceId { get; set; } = default!;
+    public int DeviceID { get; set; } = default!;
 
     public string Name { get; set; } = default!;
 
