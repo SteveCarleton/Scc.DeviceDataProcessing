@@ -6,7 +6,6 @@ using static System.Environment;
 using static System.String;
 
 namespace Scc.Services.Logging;
-//namespace Scc.Services;
 
 public class Logging
 {

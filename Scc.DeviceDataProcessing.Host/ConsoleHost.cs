@@ -7,8 +7,6 @@ using NLog.Extensions.Logging;
 using Scc.DeviceDataProcessing.Core;
 using Scc.Services.Logging;
 
-
-//#nullable enable
 namespace Scc.DeviceDataProcessing.Hosting;
 
 internal class ConsoleHost
